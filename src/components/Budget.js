@@ -3,10 +3,26 @@ import { AppContext } from '../context/AppContext';
 
 const Budget = () => {
     const { budget } = useContext(AppContext);
+    const { expenses } = useContext(AppContext);
     const [newBudget, setNewBudget] = useState(budget);
+    const BUDGET_LIMIT = 20000;
+    const totalExpenses = expenses.reduce((total, item) => {
+        return (total = total + item.cost);
+    }, 0);
+    
     const handleBudgetChange = (event) => {
-        setNewBudget(event.target.value);
-    }
+        const value = Number(event.target.value);
+        if (value <= BUDGET_LIMIT && value >= totalExpenses) {
+            setNewBudget(value);
+            
+        } else if (value < totalExpenses) {
+            alert("Cannot reduce budget value lower than the spending");
+        } else {
+            setNewBudget(BUDGET_LIMIT);
+            alert("The budget cannot exceed £" + BUDGET_LIMIT);
+        }
+    };
+    
     return (
 <div className='alert alert-secondary'>
 <span>Budget: £{budget}</span>
@@ -14,4 +30,5 @@ const Budget = () => {
 </div>
     );
 };
+
 export default Budget;
